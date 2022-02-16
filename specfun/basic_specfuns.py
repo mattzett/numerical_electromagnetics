@@ -80,7 +80,7 @@ plt.title("Spherical Bessel functions")
 
 
 ## Spherical harmonics
-lmax=4
+lmax=6
 ltheta=100
 lphi=200
 theta=np.linspace(0,pi,ltheta)
