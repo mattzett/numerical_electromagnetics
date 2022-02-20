@@ -3,7 +3,9 @@
 """
 Created on Tue Sep  1 06:50:02 2020
 
-Module containing functions for iterative solutions of linear systems
+Module containing functions for iterative solutions of linear systems.  Note that
+these are not optimized for sparse storage and as such can be quite inefficient, 
+though mathematically correct.
 
 @author: zettergm
 """
