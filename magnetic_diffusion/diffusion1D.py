@@ -43,10 +43,8 @@ rhs=np.zeros(lz)
 for i in range(0,lz):         
     if i==0:
         M[i,i]=1
-        rhs[i]=0
     elif i==lz-1:
         M[i,i]=1
-        rhs[i]=0
     else:
         M[i,i-1]=-D*dt/dz**2
         M[i,i]=1+2*D*dt/dz**2
