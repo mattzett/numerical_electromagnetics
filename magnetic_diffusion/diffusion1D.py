@@ -14,6 +14,7 @@ import scipy.sparse
 from scipy.special import erf
 import matplotlib.pyplot as plt
 from numpy import pi,sqrt,abs
+from difftools import matrix_kernel
 
 # Material parameters
 mu=4*pi*1e-7
@@ -38,18 +39,8 @@ indmax=np.argmin(abs(z-a))
 Hx[indmin:indmax]=1
 
 # Matrix defining finite-difference equation for laplacian operator, one-time setup for this problem
-M=np.zeros( (lz,lz) )
-rhs=np.zeros(lz)
-for i in range(0,lz):         
-    if i==0:
-        M[i,i]=1
-    elif i==lz-1:
-        M[i,i]=1
-    else:
-        M[i,i-1]=-D*dt/dz**2
-        M[i,i]=1+2*D*dt/dz**2
-        M[i,i+1]=-D*dt/dz**2
-Msparse=scipy.sparse.csr_matrix(M)    
+Msparse=matrix_kernel(lz,dt,dz,D)
+rhs=np.zeros( (lz,1) )
 
 # time iterations
 for n in range(0,Nmax):
