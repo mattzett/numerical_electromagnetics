@@ -61,7 +61,7 @@ for n in range(0,Nmax):
         Hyslice=scipy.sparse.linalg.spsolve(Msparse,rhssparse,use_umfpack=True)   # umfpack is overkill for this but will presumably work
         Hy[:,i]=Hyslice      
         
-        # plot results of each time step and pause briefly
+    # plot results of each time step and pause briefly
     plt.subplots(1,3,num=1,dpi=100,figsize=(14,5))
     plt.clf()
     
