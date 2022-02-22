@@ -71,7 +71,7 @@ for n in range(0,Nmax):
     plt.plot(z,Hx)
     plt.xlabel("$x$")
     plt.ylabel("$H_x(z)$")
-    plt.title( "$t$ = %6.4f s" % (n*dt) )
+    plt.title( "$t$ = %6.4f s" % ( (n+1)*dt) )
     plt.ylim((0,H0))
     plt.xlim((-2*a,2*a))
     plt.legend( ("Jackson 5.176","Numerical BTCS") )
