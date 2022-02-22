@@ -3,7 +3,7 @@
 """
 Created on Mon Feb 21 19:43:50 2022
 
-Illustrating a basic transient magnetic diffusion problem
+Illustrating a basic transient magnetic diffusion problem, See Jackson Section 5.18
 
 @author: zettergm
 """
@@ -75,4 +75,4 @@ for n in range(0,Nmax):
     plt.legend( ("Jackson 5.176","Numerical BTCS") )
     plt.show()
     plt.pause(0.01)
-    
+
