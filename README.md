@@ -1,5 +1,6 @@
 # numerical_electromagnetics
-basic numerical solutions to some electromagnetic problems
+
+basic numerical solutions to some electromagnetic problems.  Only very basic methods are demonstrated - see comments.  
 
 ## Special functions
 
