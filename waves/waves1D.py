@@ -3,7 +3,10 @@
 """
 Created on Wed Feb 23 13:14:11 2022
 
-Run a time dependent wave simulation
+Run a time dependent wave simulation, this is particular solving the advection
+  equation:
+
+      dE/dt + c* dE/dz = 0 
 
 @author: zettergm
 """
