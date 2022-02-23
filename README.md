@@ -16,4 +16,8 @@ Additionally, there is a demo using a solution via LU factorization from UMFpack
 
 ## Magnetic diffusion solutions
 
-See ``` ./magnetic_diffusion/*.py ``` for example of 1D diffusion problems from the book (section 5.18).  There is also a demo of how to do a simple 2D solution.  
+See ``` ./magnetic_diffusion/diffusion1D.py ``` for example of 1D diffusion problems from the book (section 5.18).  There is also a demo of how to do a simple 2D solution using a locally one-dimensional approximation ``` ./magnetic_diffusion/diffusion2D.py ```.
+
+## Solutions to wave equations
+
+See ``` ./waves/waves1D.py ``` for a simple solution to a scalar hyperbolic equations using the simple Lax-Wendroff method.  ``` ./waves/EMwaves1D ``` show how to extend Lax-Wendroff to solve vector wave equations, such as those describing plane EM wave propagation.  
