@@ -20,4 +20,6 @@ See ``` ./magnetic_diffusion/diffusion1D.py ``` for example of 1D diffusion prob
 
 ## Solutions to wave equations
 
-See ``` ./waves/waves1D.py ``` for a simple solution to a scalar hyperbolic equations using the simple Lax-Wendroff method.  ``` ./waves/EMwaves1D ``` show how to extend Lax-Wendroff to solve vector wave equations, such as those describing plane EM wave propagation.  
+See ``` ./waves/waves1D.py ``` for a simple solution to a scalar hyperbolic equations using the simple Lax-Wendroff method.  ``` ./waves/EMwaves1D.py ``` show how to extend Lax-Wendroff to solve vector wave equations, such as those describing plane EM wave propagation.  
+
+There is also a demo of 2D wave excitation in ``` ./waves/EMwaves2D.py ```.  
