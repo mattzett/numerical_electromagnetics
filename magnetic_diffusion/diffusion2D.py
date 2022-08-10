@@ -5,7 +5,9 @@ Created on Tue Feb 22 15:02:18 2022
 
 Numerical solution to a 2D diffusion problem.  Note that this is a problem in 
 the course that is solved in spherical coordinates, but in this case we are
-doing the numerical solution in Cartesian.  
+doing the numerical solution in Cartesian.  This code models the diffusion
+of magnetic field from an initially uniformly magnetized sphere thorugh a 
+conducting surrounding regions.  
 
 @author: zettergm
 """
@@ -88,7 +90,7 @@ for n in range(0,Nmax):
     plt.ylim((-2*a,2*a))
     plt.xlim((-2*a,2*a))
     plt.colorbar(orientation="horizontal")
-    plt.clim(0,Hmax)
+    plt.clim(0,0.667*Hmax)
     #
     # add a line for the sphere surface
     phi=np.linspace(0,2*pi,100)
@@ -109,7 +111,10 @@ for n in range(0,Nmax):
     plt.ylim((0,Hmax))    
     #
     plt.show()
-    plt.pause(0.025)
+    if n==0:
+        plt.pause(0.5)
+    else:
+        plt.pause(0.025)
     
     
     

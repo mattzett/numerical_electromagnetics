@@ -122,4 +122,9 @@ for n in range(0,lt):
     # plt.clim(0,400)
     #
     plt.show()
-    plt.pause(0.01)
+    if n==0:
+        plt.pause(0.5)
+    else:
+        plt.pause(0.025)
+        
+        

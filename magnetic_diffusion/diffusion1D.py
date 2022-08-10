@@ -65,5 +65,8 @@ for n in range(0,Nmax):
     plt.xlim((-2*a,2*a))
     plt.legend( ("Jackson 5.176","Numerical BTCS") )
     plt.show()
-    plt.pause(0.01)
+    if (n==0):
+        plt.pause(0.5)
+    else:
+        plt.pause(0.01)
 
