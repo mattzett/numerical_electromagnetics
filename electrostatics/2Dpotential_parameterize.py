@@ -149,12 +149,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Fixed parameters of the solution
-Ey0=-0.1            # background field in which the object is immersed
+Ey0=-0.05            # background field in which the object is immersed
 Ex0=0.0
 n0=4e11             # density at center of structure
-n1=1e11             # background density
-rho0=0.3            # radius of structure along semiminor axis
-L=0.1               # gradient scale length at structure edge
+n1=2e11             # background density
+rho0=50e3            # radius of structure along semiminor axis
+L=20e3               # gradient scale length at structure edge
 
 #semimajors = np.array([1,2,4,6,8,10])     # >1 makes semimajor axis in y-direction
 semimajors = np.array([1,2,3,4,5,6,7,8,10,12,14,16,20])
@@ -163,12 +163,12 @@ for i in range(0,semimajors.size):
     # Variable parameters of problem:
     semimajor=semimajors[i]
     rho0maj=rho0*semimajor      # distance from center to edge along semimajor axis
-    edgedist=2.-rho0            # tests suggest this boundary is sufficiently far away from structure edge along semimajor axis
-    a=2.0;                      # x extent
+    edgedist=7*rho0-rho0        # tests suggest this boundary is sufficiently far away from structure edge along semimajor axis
+    a=7*rho0;                   # x extent
     b=rho0maj + edgedist;       # y extent
 
     lx=128                      # number of grid points along semiminor axis direction (x)  
-    dyref=2*2.0/np.real(lx)           # reference cell spacing
+    dyref=2*a/np.real(lx)       # reference cell spacing
     ly=int(np.ceil(2*b/dyref))  # number of grid points along semimajor axis direction (y)
     
     print("Running with a,b = ", a,b, " and lx,ly = ", lx,ly)
@@ -178,9 +178,9 @@ for i in range(0,semimajors.size):
 
 
 plt.figure()
-plt.plot(semimajors/L,Eyctr/Eyctr[0])
-plt.xlabel('semimajor axis scaled to gradient-length (unitless)')
-plt.ylabel('center field magnitude relative to circular patch (unitless)')
+plt.plot(semimajors*rho0/L,Eyctr/Eyctr[0])
+plt.xlabel('$c/\ell$')
+plt.ylabel('$|E_x/E_{x,round}|$')
 
 
 ###############################################################################
