@@ -14,16 +14,16 @@ import scipy.sparse
 import scipy.sparse.linalg
 
 # parameters of problem:
-lx=128; ly=128;
-N=lx*ly    # total number of grid points
-a=1; b=1;   # square region
+lx=128; ly=256;
+N=lx*ly             # total number of grid points
+a=1; b=1;           # square region
 
 # create a 2D grid
 x=np.linspace(-2*a,2*a,lx)
 y=np.linspace(-2*b,2*b,ly)
 dx=x[1]-x[0]
 dy=y[1]-y[0]
-[X,Y]=np.meshgrid(x,y)
+[X,Y]=np.meshgrid(x,y,indexing='ij')
 
 # cylindrical coordinates
 rho=np.sqrt(X**2+Y**2)
@@ -54,7 +54,7 @@ for i in range(0,lx):
             n[i,j]=n1
 
 # Density gradients
-[dndy,dndx]=np.gradient(n,y,x)
+[dndx,dndy]=np.gradient(n,x,y)
 
 # Right-hand side of Poisson equation, viz. -rho/eps0
 rhs=np.zeros( (N) )
@@ -120,8 +120,8 @@ print("Solution with UMFPACK done...")
 # reorganize solution data
 #PhiJ=np.reshape(PhiJ, (lx,ly))
 #PhiGS=np.reshape(PhiGS, (lx,ly))
-PhiUMF=np.reshape(PhiUMF, (lx,ly))
-[EyUMF,ExUMF]=np.gradient(-PhiUMF.transpose(),y,x)
+PhiUMF=np.reshape(PhiUMF, (lx,ly), order='F')
+[ExUMF,EyUMF]=np.gradient(-PhiUMF,x,y)
 
 # compute a background field
 Ex0=0.0
@@ -145,23 +145,30 @@ Ey0=-(g1[1]-g1[0])/dy
 
 plt.subplots(1,3,figsize=(14,6),dpi=100)
 plt.subplot(1,3,1)
-plt.pcolormesh(x,y,PhiUMF,shading="auto")
+plt.pcolormesh(x,y,PhiUMF.transpose(),shading="auto")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("Sparse LU factorization [V]")
 plt.colorbar()
 
 plt.subplot(1,3,2)
-plt.pcolormesh(x,y,ExUMF-Ex0,shading="auto")
+plt.pcolormesh(x,y,(ExUMF-Ex0).transpose(),shading="auto")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("$E_x$ [V/m]")
 plt.colorbar()
 
 plt.subplot(1,3,3)
-plt.pcolormesh(x,y,EyUMF-Ey0,shading="auto")
+plt.pcolormesh(x,y,(EyUMF-Ey0).transpose(),shading="auto")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("$E_y$ [V/m]")
 plt.colorbar()
+
+
+# TO DO
+#    1)  add div(E) to show charge density
+#    2)  compute velocity and its divergence
+#    3)  anything to be done with analytical approach?
+
 
