@@ -12,8 +12,9 @@ import matplotlib.pyplot as plt
 import scipy.sparse
 import scipy.sparse.linalg
 
+
 # parameters of problem:
-lx=256; ly=256;
+lx=128; ly=128;
 N=lx*ly             # total number of grid points
 a=4; b=4;           # x,y extents
 Ey0=-0.1            # background field in which the object is immersed
@@ -27,7 +28,8 @@ dy=y[1]-y[0]
 [X,Y]=np.meshgrid(x,y,indexing='ij')
 
 # cylindrical coordinates
-rho=np.sqrt(X**2+Y**2)
+semimajor=2      # >1 makes semimajor axis in y-direction
+rho=np.sqrt(X**2+Y**2/semimajor**2)
 phi=np.arctan2(Y,X)
 
 # Dirichlet boundary condition for four sides of square
