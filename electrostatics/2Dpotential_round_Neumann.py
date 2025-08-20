@@ -15,11 +15,13 @@ import scipy.sparse.linalg
 # parameters of problem:
 lx=256; ly=256;
 N=lx*ly             # total number of grid points
-a=1; b=1;           # square region
+a=4; b=4;           # x,y extents
+Ey0=-0.1            # background field in which the object is immersed
+Ex0=0.0
 
 # create a 2D grid
-x=np.linspace(-4*a,4*a,lx)
-y=np.linspace(-4*b,4*b,ly)
+x=np.linspace(-a,a,lx)
+y=np.linspace(-b,b,ly)
 dx=x[1]-x[0]
 dy=y[1]-y[0]
 [X,Y]=np.meshgrid(x,y,indexing='ij')
@@ -35,14 +37,17 @@ f1=np.zeros( (lx) )
 f2=np.zeros( (lx) )
 #g1=np.zeros( (ly) )
 #g2=np.zeros( (ly) )
-g1=np.linspace(0,1,ly)
-g2=np.linspace(0,1,ly)
+potmax=-Ey0*(y[-1]-y[0])
+#g1=np.linspace(0,1,ly)
+#g2=np.linspace(0,1,ly)
+g1=np.linspace(0,potmax,ly)
+g2=g1
 
 # Density structure(s) on grid
 n0=4e11
 n1=1e11
 rho0=0.3
-L=0.1
+L=0.2
 rho1=rho0-L*np.log(n1/n0)    # solution for end of gradient region given a starting point and scale length
 n = np.zeros( (lx,ly) )
 for i in range(0,lx):
@@ -63,10 +68,6 @@ print("Rough width (cells) of transition region:  ",gradcells)
 
 # Right-hand side of Poisson equation, viz. -rho/eps0
 rhs=np.zeros( (N) )
-
-# compute a background field
-Ex0=0.0
-Ey0=-(g1[1]-g1[0])/dy
 
 # Matrix defining finite-difference equation for laplacian operator
 M=np.zeros( (N,N) )    # solutions are miserably slow using sparse storage for some reason...
