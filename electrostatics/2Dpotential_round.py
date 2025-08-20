@@ -14,13 +14,15 @@ import scipy.sparse
 import scipy.sparse.linalg
 
 # parameters of problem:
-lx=256; ly=256;
+lx=128; ly=128;
 N=lx*ly             # total number of grid points
-a=1; b=1;           # square region
+a=2; b=2;           # square region
+Ex0=0.0
+Ey0=-0.1            # background electric field
 
 # create a 2D grid
-x=np.linspace(-8*a,8*a,lx)
-y=np.linspace(-8*b,8*b,ly)
+x=np.linspace(-a,a,lx)
+y=np.linspace(-b,b,ly)
 dx=x[1]-x[0]
 dy=y[1]-y[0]
 [X,Y]=np.meshgrid(x,y,indexing='ij')
@@ -30,12 +32,15 @@ rho=np.sqrt(X**2+Y**2)
 phi=np.arctan2(Y,X)
 
 # Dirichlet boundary condition for four sides of square
+potmax=-Ey0*(y[-1]-y[0])
 f1=np.zeros( (lx) )
-f2=np.ones( (lx) )
+f2=potmax * np.ones( (lx) )
 #g1=np.zeros( (ly) )
 #g2=np.zeros( (ly) )
-g1=np.linspace(0,1,ly)
-g2=np.linspace(0,1,ly)
+#g1=np.linspace(0,1,ly)
+#g2=np.linspace(0,1,ly)
+g1=np.linspace(0,potmax,ly)
+g2=g1
 
 # Density structure(s) on grid
 n0=4e11
@@ -122,10 +127,6 @@ print("Solution with UMFPACK done...")
 #PhiGS=np.reshape(PhiGS, (lx,ly))
 PhiUMF=np.reshape(PhiUMF, (lx,ly), order='F')
 [ExUMF,EyUMF]=np.gradient(-PhiUMF,x,y)
-
-# compute a background field
-Ex0=0.0
-Ey0=-(g1[1]-g1[0])/dy
 
 # plot
 # plt.subplots(1,3,figsize=(14,6),dpi=100)
