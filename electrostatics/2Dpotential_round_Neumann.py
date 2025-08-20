@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Feb 25 17:37:47 2025
-
-Cylindrical column of plasma with finite conductivity
+Created on Tue Aug 19 20:31:56 2025
 
 @author: zettergm
 """
+
 import numpy as np
 #from ittools import Jacobi,GaussSeidel
 import matplotlib.pyplot as plt
@@ -19,8 +18,8 @@ N=lx*ly             # total number of grid points
 a=1; b=1;           # square region
 
 # create a 2D grid
-x=np.linspace(-8*a,8*a,lx)
-y=np.linspace(-8*b,8*b,ly)
+x=np.linspace(-4*a,4*a,lx)
+y=np.linspace(-4*b,4*b,ly)
 dx=x[1]-x[0]
 dy=y[1]-y[0]
 [X,Y]=np.meshgrid(x,y,indexing='ij')
@@ -30,8 +29,10 @@ rho=np.sqrt(X**2+Y**2)
 phi=np.arctan2(Y,X)
 
 # Dirichlet boundary condition for four sides of square
+#f1=np.zeros( (lx) )
+#f2=np.ones( (lx) )
 f1=np.zeros( (lx) )
-f2=np.ones( (lx) )
+f2=np.zeros( (lx) )
 #g1=np.zeros( (ly) )
 #g2=np.zeros( (ly) )
 g1=np.linspace(0,1,ly)
@@ -53,11 +54,19 @@ for i in range(0,lx):
         else:
             n[i,j]=n1
 
+# Ballpark the number of cells in the gradient region
+gradcells=int(np.floor((rho1-rho0)/dy))
+print("Rough width (cells) of transition region:  ",gradcells)
+
 # Density gradients
 [dndx,dndy]=np.gradient(n,x,y)
 
 # Right-hand side of Poisson equation, viz. -rho/eps0
 rhs=np.zeros( (N) )
+
+# compute a background field
+Ex0=0.0
+Ey0=-(g1[1]-g1[0])/dy
 
 # Matrix defining finite-difference equation for laplacian operator
 M=np.zeros( (N,N) )    # solutions are miserably slow using sparse storage for some reason...
@@ -65,11 +74,13 @@ for i in range(0,lx):
     for j in range(0,ly):
         k=j*lx+i    # linear index referencing i,j grid point
         if j==0:
-            M[k,k]=1
-            rhs[k]=f1[i]
+            M[k,k]=-1/dy
+            M[k,k+lx]=1/dy
+            rhs[k]=-Ey0
         elif j==ly-1:
-            M[k,k]=1
-            rhs[k]=f2[i]            
+            M[k,k-lx]=-1/dy
+            M[k,k]=1/dy
+            rhs[k]=-Ey0           
         elif i==0:
             M[k,k]=1
             rhs[k]=g1[j]
@@ -122,10 +133,6 @@ print("Solution with UMFPACK done...")
 #PhiGS=np.reshape(PhiGS, (lx,ly))
 PhiUMF=np.reshape(PhiUMF, (lx,ly), order='F')
 [ExUMF,EyUMF]=np.gradient(-PhiUMF,x,y)
-
-# compute a background field
-Ex0=0.0
-Ey0=-(g1[1]-g1[0])/dy
 
 # plot
 # plt.subplots(1,3,figsize=(14,6),dpi=100)
