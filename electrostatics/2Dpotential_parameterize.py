@@ -178,9 +178,9 @@ for i in range(0,semimajors.size):
 
 
 plt.figure()
-plt.plot(semimajors,Eyctr/Eyctr[0])
-plt.xlabel('semimajor axis (scaled)')
-plt.ylabel('center field magnitude relative to circular patch')
+plt.plot(semimajors/L,Eyctr/Eyctr[0])
+plt.xlabel('semimajor axis scaled to gradient-length (unitless)')
+plt.ylabel('center field magnitude relative to circular patch (unitless)')
 
 
 ###############################################################################
