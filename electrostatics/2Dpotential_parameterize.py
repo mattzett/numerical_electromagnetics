@@ -166,9 +166,9 @@ for i in range(0,semimajors.size):
     edgedist=2.-rho0            # tests suggest this boundary is sufficiently far away from structure edge along semimajor axis
     a=2.0;                      # x extent
     b=rho0maj + edgedist;       # y extent
-    
-    dyref=2*2.0/128.0           # reference cell spacing
-    lx=128                      # number of grid points along semiminor axis direction (x)
+
+    lx=128                      # number of grid points along semiminor axis direction (x)  
+    dyref=2*2.0/np.real(lx)           # reference cell spacing
     ly=int(np.ceil(2*b/dyref))  # number of grid points along semimajor axis direction (y)
     
     print("Running with a,b = ", a,b, " and lx,ly = ", lx,ly)
