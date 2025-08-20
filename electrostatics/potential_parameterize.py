@@ -23,8 +23,9 @@ def solve_elliptic_neumann(a,b,semimajor,lx,ly,Ex0,Ey0,rho0,n0,n1,L):
     N = lx*ly
 
     # cylindrical coordinates
-    rho=np.sqrt(X**2+Y**2/semimajor**2)
-    #phi=np.arctan2(Y,X)
+    #rho=np.sqrt(X**2+Y**2/semimajor**2)
+    rho=np.sqrt(X**2+Y**2)
+    phi=np.arctan2(Y,X)
     
     # Neumann boundary condition for four sides of square
     #f1=np.zeros( (lx) )
@@ -34,13 +35,19 @@ def solve_elliptic_neumann(a,b,semimajor,lx,ly,Ex0,Ey0,rho0,n0,n1,L):
     g2=g1
     
     rho1=rho0-L*np.log(n1/n0)    # solution for end of gradient region given a starting point and scale length
+    drho=rho1-rho0
     n = np.zeros( (lx,ly) )
     for i in range(0,lx):
         for j in range (0,ly):
-            if rho[i,j] < rho0:
+            # get an ellipse edge distance for this angle-location
+            rho0thisphi=np.sqrt(rho0**2*semimajor**2/
+                                (semimajor**2*np.cos(phi[i,j])**2 +
+                                np.sin(phi[i,j])**2))
+            
+            if rho[i,j] < rho0thisphi:
                 n[i,j]=n0
-            elif rho[i,j] > rho0 and rho[i,j] < rho1: 
-                n[i,j]=n0*np.exp(-(rho[i,j]-rho0)/L)    # ODE solution for density of fixed scale length
+            elif rho[i,j] > rho0thisphi and rho[i,j] < rho0thisphi+drho: 
+                n[i,j]=n0*np.exp(-(rho[i,j]-rho0thisphi)/L)    # ODE solution for density of fixed scale length
             else:
                 n[i,j]=n1
     
@@ -95,94 +102,71 @@ def solve_elliptic_neumann(a,b,semimajor,lx,ly,Ex0,Ey0,rho0,n0,n1,L):
     PhiUMF=np.reshape(PhiUMF, (lx,ly), order='F')
     [ExUMF,EyUMF]=np.gradient(-PhiUMF,x,y)
     
-    return x,y,PhiUMF,ExUMF,EyUMF,n
+    return x,y,PhiUMF,ExUMF,EyUMF,n,drho
 ###############################################################################
 
+
+###############################################################################
+# Draw a reference circle on a plot
+###############################################################################
+def drawedge(rho0,drho,semimajor):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    
+    # Draw a circle on the inner and outer limits of the gradient region
+    xcir=np.linspace(-rho0,rho0,128)
+    ycir=semimajor*np.sqrt(rho0**2-xcir**2)
+    ycir2=-semimajor*np.sqrt(rho0**2-xcir**2)      # other half of solution (neg. sqrt)
+    plt.plot(np.concatenate( (xcir,np.flip(xcir)) ),np.concatenate( (ycir,np.flip(ycir2)) ))
+    #xcir=np.linspace(-(rho0+drho),(rho0+drho),128)
+    #ycir=semimajor*np.sqrt((rho0+drho)**2-xcir**2)
+    #ycir2=-semimajor*np.sqrt((rho0+drho)**2-xcir**2)
+    #plt.plot(np.concatenate( (xcir,np.flip(xcir)) ),np.concatenate( (ycir,np.flip(ycir2)) ))
+
+    return
+###############################################################################
 
 
 ###############################################################################
 # Plotting
 ###############################################################################
-def plot_results(x,y,Ex0,Ey0,Phi,Ex,Ey):
+def plot_results(x,y,Ex0,Ey0,n,Phi,Ex,Ey,rho0,drho,semimajor):
     import matplotlib.pyplot as plt
     
-    plt.subplots(1,3,figsize=(14,6),dpi=100)
-    plt.subplot(1,3,1)
+    plt.subplots(1,4,figsize=(14,6),dpi=100)
+    
+    plt.subplot(1,4,1)
+    plt.pcolormesh(x,y,n.transpose(),shading="auto")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Sparse LU factorization [V]")
+    plt.colorbar()
+    drawedge(rho0,drho,semimajor)
+    
+    plt.subplot(1,4,2)
     plt.pcolormesh(x,y,Phi.transpose(),shading="auto")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.title("Sparse LU factorization [V]")
     plt.colorbar()
+    drawedge(rho0,drho,semimajor)
     
-    plt.subplot(1,3,2)
+    plt.subplot(1,4,3)
     plt.pcolormesh(x,y,(Ex-Ex0).transpose(),shading="auto")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.title("$E_x$ [V/m]")
     plt.colorbar()
+    drawedge(rho0,drho,semimajor)
     
-    plt.subplot(1,3,3)
+    plt.subplot(1,4,4)
     plt.pcolormesh(x,y,(Ey-Ey0).transpose(),shading="auto")
     plt.xlabel("x")
     plt.ylabel("y")
     plt.title("$E_y$ [V/m]")
     plt.colorbar()
-    
+    drawedge(rho0,drho,semimajor)
+
     return
-###############################################################################
-
-
-
-###############################################################################
-###############################################################################
-##   Main Program
-###############################################################################
-###############################################################################
-
-# As a convergence study we need to take care to keep dx, dy constant to preserve 
-#   accuracy in the gradient region and to also keep the boundaryh a fixed distance
-#   from the gradient regions in order to avoid having boundaries affect solutions
-#   (in a comparative sense, at least).  
-
-# Imports
-import numpy as np
-import matplotlib.pyplot as plt
-
-# Fixed parameters of the solution
-Ey0=-0.05            # background field in which the object is immersed
-Ex0=0.0
-n0=4e11             # density at center of structure
-n1=2e11             # background density
-rho0=50e3            # radius of structure along semiminor axis
-L=20e3               # gradient scale length at structure edge
-
-#semimajors = np.array([1,2,4,6,8,10])     # >1 makes semimajor axis in y-direction
-semimajors = np.array([1,2,3,4,5,6,7,8,10,12,14,16,20])
-Eyctr=np.zeros( (semimajors.size) )
-for i in range(0,semimajors.size):
-    # Variable parameters of problem:
-    semimajor=semimajors[i]
-    rho0maj=rho0*semimajor      # distance from center to edge along semimajor axis
-    edgedist=7*rho0-rho0        # tests suggest this boundary is sufficiently far away from structure edge along semimajor axis
-    a=7*rho0;                   # x extent
-    b=rho0maj + edgedist;       # y extent
-
-    lx=128                      # number of grid points along semiminor axis direction (x)  
-    dyref=2*a/np.real(lx)       # reference cell spacing
-    ly=int(np.ceil(2*b/dyref))  # number of grid points along semimajor axis direction (y)
-    
-    print("Running with a,b = ", a,b, " and lx,ly = ", lx,ly)
-    x,y,Phi,Ex,Ey,_ = solve_elliptic_neumann(a,b,semimajor,lx,ly,Ex0,Ey0,rho0,n0,n1,L)
-    plot_results(x,y,Ex0,Ey0,Phi,Ex,Ey)
-    Eyctr[i]=(Ey-Ey0)[lx//2,ly//2]      # take only the residual (polarization) field
-
-
-plt.figure()
-plt.plot(semimajors*rho0/L,Eyctr/Eyctr[0])
-plt.xlabel('$c/\ell$')
-plt.ylabel('$|E_x/E_{x,round}|$')
-
-
-###############################################################################
 ###############################################################################
 
