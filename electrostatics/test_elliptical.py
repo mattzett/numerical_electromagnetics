@@ -15,9 +15,11 @@ lmu=64
 lnu=256
 
 a=1
-b=3
+e=10
+c=e*a
+b=np.sqrt(a**2+c**2)
 
-mu=np.linspace(0,2,lmu)
+mu=np.linspace(0,0.25,lmu)
 nu=np.linspace(0,2*pi,lnu)
 
 MU,NU=np.meshgrid(mu,nu,indexing='ij')

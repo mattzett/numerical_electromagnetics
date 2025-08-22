@@ -33,7 +33,7 @@ from numpy import cosh,cos,sinh,sin,sqrt,arcsin,pi,log
 def elliptical2cart(mu,nu,a,b):       
     c=sqrt(b**2-a**2)
     x=c*cosh(mu)*cos(nu)
-    y=c*sinh(mu)*sin(nu)
+    y=c*sinh(mu)*sin(nu)      # sinh goes with minor axis?
     return x,y
 
 
@@ -46,7 +46,7 @@ def cart2elliptical(X,Y,a,b):
     
     B=x**2+y**2-c**2
     
-    p=(-B+sqrt(B**2+4*c**2*y**2))/2/c**2
+    p=(-B+sqrt(B**2+4*c**2*y**2))/2/c**2    # discriminant last term should be minor axis?
     q=(-B-sqrt(B**2+4*c**2*y**2))/2/c**2
     
     p[p>1.0]=1.0      # handles issues with precision
@@ -55,7 +55,7 @@ def cart2elliptical(X,Y,a,b):
     nu0=arcsin(sqrt(p))
     
     nu=np.empty(nu0.shape)
-    for i in range(0,nu0.size):
+    for i in range(0,nu0.size):     # need to swap x,y if axis swapped?
         if (x[i]>=0 and y[i]>=0):
             nu[i]=nu0[i]
         elif (x[i]<0 and y[i]>=0):
