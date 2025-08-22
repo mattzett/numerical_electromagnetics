@@ -55,7 +55,7 @@ for i in range(0,semimajors.size):
 plt.figure()
 plt.plot(semimajors*rho0/L,Eyctr/Eyctr[0])
 plt.xlabel('$c/\ell$')
-plt.ylabel('$|E_x/E_{x,round}|$')
+plt.ylabel('$|E_y/E_{y,round}|$')
 
 ###############################################################################
 ###############################################################################

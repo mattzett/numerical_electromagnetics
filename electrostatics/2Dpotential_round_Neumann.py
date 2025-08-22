@@ -74,6 +74,9 @@ vxctrline=vx[:,ly//2]
 plt.figure()
 plt.plot(x,vxctrline)
 plot_grad_region(vxctrline,x,rho0,drho)
+
+# Compute a divergence
+
 ###############################################################################
 
 
