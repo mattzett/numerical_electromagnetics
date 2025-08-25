@@ -30,14 +30,14 @@ Ex0=0.0
 n0=4e11                # density at center of structure
 n1=2e11                # background density
 a=50e3                 # radius of structure along semiminor axis
-d=4.0                  # ratio of semimajor to semiminor axes
+d=10.0                 # ratio of semimajor to semiminor axes
 b=a*d                  # semimajor axis
 c=np.sqrt(b**2-a**2)   # elliptic ecccentricity
-L=20e3                 # gradient scale length at structure edge
+L=50e3                 # gradient scale length at structure edge
 
 edgedist=4*a-a           # tests suggest this boundary is sufficiently far away from structure edge along semimajor axis
 xmax=4*a;                # x extent
-ymax=a*d + edgedist;       # y extent
+ymax=a*d + edgedist;     # y extent
 lx=256
 ly=256
 

@@ -32,7 +32,7 @@ def solve_elliptic_neumann(xmax,ymax,lx,ly,a,b,Ex0,Ey0,n0,n1,L):
     # elliptical coordinates on our grid using reference ellipse of semiminor
     #   semimajor size a,b
     #MU,NU = cart2elliptical(X,Y,a,b)  
-    MU,NU = cart2elliptical(Y,X,a,b)    # rotate ellipse
+    MU,NU = cart2elliptical(Y,X,a,b)    # rotate ellipse 90 degrees (semimajor aligned y)
         
     # spherical coordinates on grid (if needed)
     #rho=np.sqrt(X**2+Y**2)
